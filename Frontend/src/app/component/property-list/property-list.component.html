@@ -1,0 +1,161 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Create Property</h4>
+          <form [formGroup]="propertyForm" (ngSubmit)="createProperty()" novalidate>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" formControlName="name">
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('name')?.touched && propertyForm.get('name')?.hasError('required')">
+                Name is required.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('name')?.touched && propertyForm.get('name')?.hasError('minlength')">
+                Name must be at least 3 characters long.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('name')?.touched && propertyForm.get('name')?.hasError('maxlength')">
+                Name cannot exceed 20 characters.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rooms">Rooms</label>
+              <input type="number" class="form-control" id="rooms" formControlName="rooms">
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('rooms')?.touched && propertyForm.get('rooms')?.hasError('required')">
+                Rooms is required.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('rooms')?.touched && propertyForm.get('rooms')?.hasError('min')">
+                Rooms must be at least 5.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('rooms')?.touched && propertyForm.get('rooms')?.hasError('max')">
+                Rooms cannot exceed 200.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="number" class="form-control" id="price" formControlName="price">
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('price')?.touched && propertyForm.get('price')?.hasError('required')">
+                Price is required.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('price')?.touched && propertyForm.get('price')?.hasError('min')">
+                Price must be at least 0.
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('price')?.touched && propertyForm.get('price')?.hasError('max')">
+                Price cannot exceed 9999.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select class="form-control" id="category" formControlName="category">
+                <option value="">Select a category</option>
+                <option value="APARTMENTS">Apartments</option>
+                <option value="VILLAS">Villas</option>
+                <option value="COTTAGES">Cottages</option>
+                <option value="HOUSES">Houses</option>
+              </select>
+              <div class="alert alert-danger"
+                *ngIf="propertyForm.get('category')?.touched && propertyForm.get('category')?.hasError('required')">
+                Category is required.
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="btn btn-primary" [disabled]="propertyForm.invalid" *ngIf="showAdd">Create
+                Property</button>
+              <button type="submit" class="btn btn-primary" (click)="updateProperty(propertyForm.value)"
+                [disabled]="propertyForm.invalid" *ngIf="showUpdate">Update Property</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+<h4>Property Details</h4>
+  </div>
+  <div class="row mt-4">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Rooms</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let property of properties">
+            <td>{{ property.id }}</td>
+            <td>{{ property.name }}</td>
+            <td>{{ property.rooms }}</td>
+            <td>{{ property.price }}</td>
+            <td>{{ property.category }}</td>
+            <td>
+              <button class="btn btn-info btn-sm" (click)="edit(property)">Edit</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteProperty(property.id)">Delete</button>
+              <!-- <button class="btn btn-info btn-sm" (click)="getSingle(property)">Get Details</button> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<h4>Search Property</h4>
+
+<div class="col">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Search Properties</h5>
+      <form [formGroup]="searchForm" (ngSubmit)="searchProperties()" novalidate>
+        <div class="form-group">
+          <label for="searchName">Search by Name</label>
+          <input type="text" class="form-control" id="searchName" formControlName="name">
+        </div>
+        <div class="form-group">
+          <label for="searchPrice">Search by Price</label>
+          <input type="number" class="form-control" id="searchPrice" formControlName="price">
+        </div>
+        <div class="form-group">
+          <label for="searchCategory">Search by Category</label>
+          <select class="form-control" id="searchCategory" formControlName="category">
+            <option value="">All Categories</option>
+            <option value="APARTMENTS">Apartments</option>
+            <option value="VILLAS">Villas</option>
+            <option value="COTTAGES">Cottages</option>
+            <option value="HOUSES">Houses</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col">
+    <div *ngIf="searchResults.length > 0">
+      <h2>Search Results:</h2>
+      <ul>
+        <li *ngFor="let result of searchResults">
+          <p>Name: {{ result.name }}</p>
+          <p>Rooms: {{ result.rooms }}</p>
+          <p>Price: {{ result.price }}</p>
+          <p>Category: {{ result.category }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
